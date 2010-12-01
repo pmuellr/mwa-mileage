@@ -1,0 +1,63 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+require underscore as _
+require backbone
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+class Entry < backbone.Model
+    super()
+    
+    this.bind("change:miles", function() {
+        console.log("miles changed")
+    })
+
+    this.bind("change:gallons", function() {
+        console.log("gallons changed")
+    })
+
+    this.bind("change", function() {
+        console.log("something changed")
+    })
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method miles(value)
+
+    if (value === undefined) return this.get("miles")
+    this.set({"miles": value})
+    
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method gallons(value)
+
+    if (value === undefined) return this.get("gallons")
+    this.set({"gallons": value})
+    
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method date(value)
+
+    if (value === undefined) return this.get("date")
+    this.set({"date": value})
+    
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method mileage
+
+    var miles = this.miles()
+    var gallons = this.gallons()
+    
+    if (0 == gallons) return 0
+    return miles * 1.0 / gallons
+    

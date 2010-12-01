@@ -1,0 +1,40 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+require Entry
+require backbone
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+class MileageApp
+
+mixin backbone.Events
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+static method main
+    console.log("in MileageApp.main()")
+    
+    entry = new Entry()
+    entry.miles(360)
+    entry.gallons(11)
+    
+    console.log("mileage: " + entry.mileage())
+    
+    var app = new MileageApp()
+    
+    app.bind("something", function() {
+        console.log("something fired from MileageApp.main()")
+    })
+    
+    app.trigger("something")
+    
+    app.unbind("something")
+    
+    app.trigger("something")
