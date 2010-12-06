@@ -5,36 +5,89 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require Entry
-require backbone
-
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
 class MileageApp
+
+require underscore as _
+require backbone
+
+require ./util/BackboneLocalStorage
+require ./util/Ex
+
+require ./models/FillUp
+require ./models/FillUpLog
 
 mixin backbone.Events
 
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
+static 
+    var Version = "1.0.0"
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
 static method main
-    console.log("in MileageApp.main()")
+
+    $(function() {new MileageApp().runMain()})
     
-    entry = new Entry()
-    entry.miles(360)
-    entry.gallons(11)
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method runMain
+    this.store = BackboneLocalStorage("FillUps")
     
-    console.log("mileage: " + entry.mileage())
+    _.bindAll(this)
     
-    var app = new MileageApp()
+    $("#version").html(Version)
     
-    app.bind("something", function() {
-        console.log("something fired from MileageApp.main()")
+//    $("#github").click(this.clicked_github)
+    
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method clicked_github
+    var url = $("#github").attr("href")
+//    open(url, "github") - no trimmings in Mobile Safari
+    location.href = url
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method crap
+    return this.inner()
+    
+    //-------------------------------------------------------------------------
+    fillUp = new FillUp()
+    fillUp.addCallback("change:mileage", function() {
+        console.log("mileage is now: " + fillUp.mileage)
     })
     
-    app.trigger("something")
+    fillUp.miles   = 360
+    fillUp.gallons =  11
     
-    app.unbind("something")
+    fillUp.miles   = 2 * fillUp.miles
+    fillUp.gallons = 2 * fillUp.gallons
+    fillUp.gallons = 2 * fillUp.gallons
+
+    //-------------------------------------------------------------------------
+    fillUpLog = new FillUpLog()
     
-    app.trigger("something")
+    vals = [
+        [300, 10], [300, 10], [200, 10], [100, 10],
+        [ 50, 10], [ 10, 10], [  1, 10],[  1, 10],
+    ]
+
+    _.each(vals, function(val) {
+        var miles   = val[0]
+        var gallons = val[1]
+        
+        fillUpLog.add(new FillUp({miles:miles, gallons:gallons}))
+        console.log("fillUp: miles: " + miles + "; gallons: " + gallons + "; avg mpg: " + fillUpLog.averageMileage)
+    })
+    
+method inner
+    throw Ex(arguments, "just trying an Ex")

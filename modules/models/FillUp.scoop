@@ -5,59 +5,59 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require underscore as _
 require backbone
 
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-class Entry < backbone.Model
-    super()
-    
-    this.bind("change:miles", function() {
-        console.log("miles changed")
-    })
+class FillUp(attributes) < backbone.Model
+    super(attributes)
 
-    this.bind("change:gallons", function() {
-        console.log("gallons changed")
-    })
-
-    this.bind("change", function() {
-        console.log("something changed")
-    })
+    this.updateMileage()
+    this.addCallback("change", this.updateMileage)
 
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-method miles(value)
-
-    if (value === undefined) return this.get("miles")
-    this.set({"miles": value})
+getter miles
+    return this.get("miles")
+    
+setter miles(value)
+    this.set("miles", value)
     
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-method gallons(value)
-
-    if (value === undefined) return this.get("gallons")
-    this.set({"gallons": value})
+getter gallons
+    return this.get("gallons")
+    
+setter gallons(value)
+    this.set("gallons", value)
     
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-method date(value)
-
-    if (value === undefined) return this.get("date")
-    this.set({"date": value})
+getter date
+    return this.get("date")
+    
+setter date(value)
+    this.set("date", value)
     
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-method mileage
+getter mileage
+    return this.get("mileage")
 
-    var miles = this.miles()
-    var gallons = this.gallons()
-    
-    if (0 == gallons) return 0
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method updateMileage()
+    this.set({"mileage": calculateMileage(this.miles, this.gallons)})
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+function calculateMileage(miles, gallons)
+    if ((0 == gallons) || (0 == miles)) return 0
     return miles * 1.0 / gallons
-    

@@ -1,0 +1,51 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// return a stack trace - an array of lines, one per stack frame
+//-----------------------------------------------------------------------------
+class StackTrace(args)
+    if (!_.isArguments(args)) {
+        throw Ex(arguments, "first parameter must be an Arguments object") 
+    }
+    
+    return getTrace(args)
+    
+//-----------------------------------------------------------------------------
+// 
+//-----------------------------------------------------------------------------
+require underscore as _
+
+require ./Ex
+
+//-----------------------------------------------------------------------------
+// 
+//-----------------------------------------------------------------------------
+function getTrace(args)
+
+    var result = []
+    var visitedFuncs = []
+    
+    var func = args.callee
+    
+    while (func) {
+        if      (func.signature)   result.push(func.signature)
+        else if (func.displayName) result.push(func.displayName)
+        else if (func.name)        result.push(func.name)
+        else result.push("<anonymous>")
+
+        if (-1 != visitedFuncs.indexOf(func)) {
+            result.push("... recursion")
+            return result
+        }
+        
+        visitedFuncs.push(func)
+        
+        func = func.caller
+    }
+    
+    return result

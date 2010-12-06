@@ -1,0 +1,38 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+class Ex(args, message)
+    if (!_.isArguments(args)) {
+        throw Ex(arguments, "first parameter must be an Arguments object") 
+    }
+    
+    console.log("Stack Trace:")
+    var trace = StackTrace(args)
+    trace.forEach(function(traceItem) {
+        console.log("   " + traceItem)
+    })
+    
+    return new Error(prefix(args, message))
+    
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+require underscore as _
+
+require ./StackTrace
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+function prefix(args, string)
+    if (args.callee.signature)   return args.callee.signature + ": " + string
+    if (args.callee.displayName) return args.callee.displayName + ": " + string
+    if (args.callee.name)        return args.callee.name + ": " + string
+    return "<anonymous>: " + string
