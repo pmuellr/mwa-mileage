@@ -5,7 +5,32 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require ./util/View
+require backbone
+require underscore as _
+require ../models/FillUp
 
-class FillUpEditor < ./util/View
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+static
+    var ViewOptions = {
+        model: FillUp
+    }
 
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+class FillUpEditor(options) < backbone.View
+    super(_.extend(ViewOptions, options))
+    
+    this.render()
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method render()
+    $("#page-edit-field-gallons").val(this.model.gallons)
+    $("#page-edit-field-miles").val(this.model.miles)
+    $("#page-edit-field-date").val(this.model.date)
+    
+    return this

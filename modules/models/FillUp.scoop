@@ -6,15 +6,30 @@
 //-----------------------------------------------------------------------------
 
 require backbone
+require underscore as _
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+static 
+    var DefaultAttributes = {
+        miles:   300,
+        gallons: 10,
+        date:    "2010-12-06"
+    }
 
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
 class FillUp(attributes) < backbone.Model
+    attributes = _.extend({}, DefaultAttributes, attributes)
+    
     super(attributes)
+    
+    _.bindAll(this, "updateMileage")
 
     this.updateMileage()
-    this.addCallback("change", this.updateMileage)
+    this.bind("change", this.updateMileage)
 
 //-----------------------------------------------------------------------------
 //

@@ -19,7 +19,8 @@ require ./util/Ex
 require ./models/FillUp
 require ./models/FillUpLog
 
-mixin backbone.Events
+require ./views/FillUpEditor
+require ./views/FillUpRow
 
 //-----------------------------------------------------------------------------
 //
@@ -40,20 +41,33 @@ static method main
 method runMain
     this.store = BackboneLocalStorage("FillUps")
     
-    _.bindAll(this)
-    
     $("#version").html(Version)
     
-//    $("#github").click(this.clicked_github)
+    var self = this
+    
+    $("#page-entries").bind("pageshow", function(event, ui) {
+        self.showPageEntries()
+    })
+    
+    $("#page-edit").bind("pageshow", function(event, ui) {
+        self.showPageAdd()
+    })
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+method showPageEntries
     
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-method clicked_github
-    var url = $("#github").attr("href")
-//    open(url, "github") - no trimmings in Mobile Safari
-    location.href = url
+method showPageAdd
 
+    var view = new FillUpEditor({
+        model: new FillUp(),
+        el:    $("#page-edit-content").first()
+    })
+    
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
