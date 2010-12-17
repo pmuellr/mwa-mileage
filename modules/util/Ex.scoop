@@ -6,7 +6,10 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-//
+require underscore as _
+
+require ./StackTrace
+
 //-----------------------------------------------------------------------------
 class Ex(args, message)
     if (!_.isArguments(args)) {
@@ -14,25 +17,13 @@ class Ex(args, message)
     }
     
     console.log("Stack Trace:")
-    var trace = StackTrace(args)
-    trace.forEach(function(traceItem) {
-        console.log("   " + traceItem)
-    })
+    StackTrace.dump(args)
     
-    return new Error(prefix(args, message))
+    throw new Error(prefix(args, message))
     
-//-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
-require underscore as _
-
-require ./StackTrace
-
-//-----------------------------------------------------------------------------
-//
 //-----------------------------------------------------------------------------
 function prefix(args, string)
-    if (args.callee.signature)   return args.callee.signature + ": " + string
+    if (args.callee.signature)   return args.callee.signature +   ": " + string
     if (args.callee.displayName) return args.callee.displayName + ": " + string
-    if (args.callee.name)        return args.callee.name + ": " + string
-    return "<anonymous>: " + string
+    if (args.callee.name)        return args.callee.name +        ": " + string
+    return "<anonymous>" +                                        ": " + string

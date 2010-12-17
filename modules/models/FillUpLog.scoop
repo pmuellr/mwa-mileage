@@ -10,47 +10,47 @@ require backbone
 require ./FillUp
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 class FillUpLog < backbone.Collection
     super()
     
-    _.bindAll(this)
-    
     this.model = FillUp
-    
-    this.events = {
-    
-    }
+    this.events = {}
 
-    this.bind("change", function() { this.calculateAverageMileage() })
-    this.bind("add",    function() { this.calculateAverageMileage() })
-    this.bind("remove", function() { this.calculateAverageMileage() })
+    this.calculateStats()
 
-//-----------------------------------------------------------------------------
-//
+    var self = this
+    this.bind("change", function() { self.calculateStats() })
+    this.bind("add",    function() { self.calculateStats() })
+    this.bind("remove", function() { self.calculateStats() })
+
 //-----------------------------------------------------------------------------
 getter averageMileage
 
-    return this._averageMileage
+    return this._stats.averageMileage
+
+//-----------------------------------------------------------------------------
+getter totalMiles
+    return this._stats.totalMiles
+
+//-----------------------------------------------------------------------------
+getter totalGallons
+    return this._stats.totalGallons
     
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
-method calculateAverageMileage(fillUpLog)
-    var memo = {miles: 0, gallons: 0}
+method calculateStats()
+    var stats = {totalMiles: 0, totalGallons: 0}
     
-    memo = fillUpLog.reduce(function(memo,fillUp) {
-        memo.miles   += fillUp.miles
-        memo.gallons += fillUp.gallons
-        return memo
-    }, memo)
+    this.each(function(fillUp) {
+        stats.totalMiles   += fillUp.miles
+        stats.totalGallons += fillUp.gallons
+    })
     
-    if ((memo.miles == 0) || (memo.gallons == 0)) {
-        fillUpLog._averageMileage = 0
+    if ((stats.miles == 0) || (stats.gallons == 0)) {
+        stats.averageMileage = 0
     }
     else {
-        fillUpLog._averageMileage = memo.miles * 1.0 / memo.gallons
+        stats.averageMileage = stats.totalMiles * 1.0 / stats.totalGallons
     }
 
+    this._stats = stats
     

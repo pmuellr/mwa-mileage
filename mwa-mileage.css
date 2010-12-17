@@ -5,39 +5,96 @@
  *----------------------------------------------------------------------------*/
 
 /* ---------------------------------------------------------------------------*/
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  font-weight: inherit;
-  font-style: inherit;
-  font-size: 100%;
-  font-family: inherit;
-  vertical-align: baseline;
-}
-
-/* ---------------------------------------------------------------------------*/
 body {
-    font-family: Verdana;
+    font-family:        Verdana;
+    background-color:   #CCF;
+    margin:             0;
+    font-size:          150%
 }
 
 /* ---------------------------------------------------------------------------*/
-#loading {
-    font-size:  200%;
-    margin-top: 2em;
-    text-align: center;
-    
+h1 {
+    margin:             0;
+    text-align:         center;
+    font-size:          100%;
+    font-weight:        bold;
+    color:              #FFF;
+    background-color:   #000;
+}
+
+/* ---------------------------------------------------------------------------*/
+#dashboard {
+    width:              100%
+}
+
+/* ---------------------------------------------------------------------------*/
+#dashboard td {
+    text-align:         right;
+    background-color:   #CCF;
+}
+
+/* ---------------------------------------------------------------------------*/
+#average-mileage {
+    font-size:          200%;
+    font-weight:        bold;
+}
+
+/* ---------------------------------------------------------------------------*/
+#total-distance {
+    font-weight:        bold;
+}
+
+/* ---------------------------------------------------------------------------*/
+#total-fuel {
+    font-weight:        bold;
+}
+
+/* ---------------------------------------------------------------------------*/
+#average {
+    vertical-align:     bottom;  
+}
+
+/* ---------------------------------------------------------------------------*/
+#totals {
+    vertical-align:     bottom;    
+}
+
+#totals > div {
+    padding:            0.0em 0.5em;
+}
+/* ---------------------------------------------------------------------------*/
+#mileage {
+    font-size:          200%
+}
+
+.toolbar {
+    padding:            0.5em 0.0em;
+    text-align:         center;
+}
+
+.toolbar button {
+    font-size:          90%;
+}
+
+#entries div {
+    text-align:         left;
+    padding:            0.2em 0.5em;
+    margin:             0.5em 0.0em;
+    border-top-style:   solid;
+    border-top-width:   thin;
+}
+
+/* ---------------------------------------------------------------------------*/
+.huh {
+    -moz-box-flex:      1;
+    -webkit-box-flex:   1;
+    box-flex:           1;
+    -moz-box-align:     stretch;
+    -webkit-box-align:  stretch;
+    box-align:          stretch;
 }
 
 /* ---------------------------------------------------------------------------*/
 .template {
-    display: none;
+    display:            none;
 }

@@ -12,16 +12,139 @@ http://www.opensource.org/licenses/mit-license.php
 <head>
 <title>mwa: mileage</title>
 
-<link rel="apple-touch-icon" href="images/HAZMAT_Class_3_Gasoline-57x57.png"/>
+<link rel="apple-touch-icon-precomposed" href="images/HAZMAT_Class_3_Gasoline-57x57.png"/>
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="viewport--jquery-mobile-adds-this" content="user-scalable=no, width=device-width">
+<meta name="viewport" content="user-scalable=no, width=device-width, height=device-height">
 
-<link href="vendor/jquery/jquery.mobile.css" rel="stylesheet" type="text/css"/>
 <link href="mwa-mileage.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<!- ======================================================================== -->
+<body>
+
+<!- ======================================================================== -->
+<div id="page-main" class="page">
+    <h1>mwa-mileage</h1>
+    
+    <table id="dashboard" width="100%" cellspacing="0" cellpadding="0">
+    
+        <tr width="100%">
+    
+        <td id="average" width="50%">
+            <div>
+                <span id="average-mileage">00.0</span><br>
+                <span><b>mileage</b></span>
+            </div>
+    
+        <td id="totals" width="50%">
+            <div>
+                <div id="total-distance">000000</div>
+                <div><b>Distance</b></div>
+            </div>
+            <p>
+            <div>
+                <div id="total-fuel">0000.0</div>
+                <div><b>Fuel</b></div>
+            </div>
+    
+        <!- ======================================================================== -->
+        <tr><td colspan="2">
+            <div class="toolbar">
+                <button class="tool-add">      add     </button>
+                <button class="tool-about">    about   </button>
+                <button class="tool-settings"> setting </button>
+            </div>
+        
+        <!- ======================================================================== -->
+        <tr><td id="entries" colspan="2">
+            <div>sample <br> entry</div>
+            <div>sample <br> entry</div>
+            <div>sample <br> entry</div>
+            <div>sample <br> entry</div>
+        
+    <!- ======================================================================== -->
+    </table>
+</div>
+
+<!- ======================================================================== -->
+<div id="page-edit" class="page">
+    <h1>mwa-mileage <span id="edit-action">edit</span></h1>
+
+    <form action="#" method="huh">
+        
+        <table width="100%">
+        
+            <tr>
+            <td width="50%">Distance 
+            <td width="50%"><input type="number" name="miles" id="dialog-edit-field-miles" min="0" max="1000" step="0.1" value="should have been set to something" />
+    
+            <tr>
+            <td>Fuel
+            <td><input type="number" name="miles" id="dialog-edit-field-miles" min="0" max="1000" step="0.1" value="should have been set to something" />
+    
+            <tr>
+            <td>Date
+            <td><input type="date" name="date" id="dialog-edit-field-date" value="should have been set to something" />
+
+        </table>
+        
+        <div class="toolbar">
+            <button class="tool-save">   save   </button>
+            <button class="tool-cancel"> cancel </button>
+        </div>
+        
+    </form>
+</div>
+
+<!- ======================================================================== -->
+<div id="page-settings" class="page">
+    <h1>mwa-mileage settings</h1>
+
+    <form action="#" method="huh">
+        
+        <div>
+            <label for="distance">Miles:</label>
+            <input type="number" name="miles" id="dialog-edit-field-miles" min="0" max="1000" step="0.1" value="should have been set to something" />
+        </div>	
+
+        <div data-role="fieldcontain">
+            <label for="fuel">Gallons:</label>
+            <input type="number" name="gallons" id="dialog-edit-field-gallons" min="0" max="1000" step="0.1" value="should have been set to something" />
+        </div>	
+
+        <div data-role="fieldcontain">
+            <label for="date">Date:</label>
+            <input type="date" name="date" id="dialog-edit-field-date" value="should have been set to something" />
+        </div>	
+        
+        <div class="toolbar">
+            <button class="tool-save">   save   </button>
+            <button class="tool-cancel"> cancel </button>
+        </div>
+        
+    </form>
+</div>
+
+<!- ======================================================================== -->
+<div id="page-about" class="page"> 
+    <h1>about mileage</h1>
+    
+    <div>
+        <p>Version: <span id="version"></span>
+        <p>By: Patrick Mueller
+        <p><a href="https://github.com/pmuellr/mwa-mileage">fork me on github</a>
+    </div>
+
+    <div class="toolbar">
+        <button class="tool-back">   back   </button>
+    </div>
+        
+</div> 
+
+<!- ======================================================================== -->
+</body>
 
 <script src="vendor/jquery/jquery.js"></script>
-<script src="mwa-mileage-jquery-mobile.js"></script>
-<script src="vendor/jquery/jquery.mobile.js"></script>
 
 <script src="vendor/modjewel/modjewel-require.js"></script>
 
@@ -29,10 +152,10 @@ http://www.opensource.org/licenses/mit-license.php
 <script src="vendor/backbone/backbone.transportd.js"></script>
 <script src="vendor/scooj/scooj.transportd.js"></script>
 
-<script src="modules/EleFuncs.transportd.js"></script>
 <script src="modules/MileageApp.transportd.js"></script>
 
 <script src="modules/util/BackboneLocalStorage.transportd.js"></script>
+<script src="modules/util/EleFuncs.transportd.js"></script>
 <script src="modules/util/Ex.transportd.js"></script>
 <script src="modules/util/StackTrace.transportd.js"></script>
 
@@ -46,134 +169,4 @@ http://www.opensource.org/licenses/mit-license.php
 require("MileageApp").main()
 </script>
 
-</head>
-
-<!- ======================================================================== -->
-<body>
-
-<!- ======================================================================== -->
-<div id="page-main" data-role="page"> 
-    <div data-role="header">
-        <h1>mileage</h2>
-    </div>
-    
-    <div data-role="content">
-        <div class="ui-grid-a">
-        	<div class="ui-block-a">Average Mileage</div>
-        	<div class="ui-block-b" id="page-main-average-mileage"></div>
-        </div>
-    
-    </div>
-    
-    <div data-role="footer">
-        <a href="#page-edit">add fillup</a>
-        <a href="#page-entries">fillups</a>
-        <a href="#page-about">about</a>
-    </div>
-</div> 
-
-<!- ======================================================================== -->
-<div id="page-entries" data-role="page"> 
-    <div data-role="header">
-        <h1>fillups</h2>
-    </div>
-    
-    <div data-role="content">
-        <p>No content yet
-    </div>
-    
-    <div data-role="footer">
-        <a href="#page-help-page-entries">help</a>
-    </div>
-</div> 
-
-<!- ======================================================================== -->
-<div id="page-help-page-entries" data-role="page"> 
-    <div data-role="header">
-        <h1>fillups help</h2>
-    </div>
-    
-    <div data-role="content">
-        <p>No content yet
-    </div>
-</div> 
-
-<!- ======================================================================== -->
-<div id="page-edit" data-role="page">
-    <div data-role="header">
-        <h1>edit fillup</h2>
-    </div>
-    
-    <div id="page-edit-content" data-role="content">
-        <form action="#" method="huh">
-        
-            <div data-role="fieldcontain">
-                <label for="miles">Miles:</label>
-                <input type="number" name="miles" id="page-edit-field-miles" min="0" max="1000" step="0.1" value="should have been set to something" />
-            </div>	
-    
-            <div data-role="fieldcontain">
-                <label for="gallons">Gallons:</label>
-                <input type="number" name="gallons" id="page-edit-field-gallons" min="0" max="1000" step="0.1" value="should have been set to something" />
-            </div>	
-    
-            <div data-role="fieldcontain">
-                <label for="date">Date:</label>
-                <input type="date" name="date" id="page-edit-field-date" value="should have been set to something" />
-            </div>	
-        </form>
-    </div>
-    
-    <div data-role="footer">
-        <button>save</button>
-        <button>cancel</button>
-        <a href="#page-help-page-edit">help</a>
-    </div>
-</div>
-
-<!- ======================================================================== -->
-<div id="page-help-page-edit" data-role="page"> 
-    <div data-role="header">
-        <h1>add fillup help</h2>
-    </div>
-    
-    <div data-role="content">
-        <p>No content yet
-    </div>
-</div> 
-
-<!- ======================================================================== -->
-<div id="page-about" data-role="page"> 
-    <div data-role="header">
-        <h1>about mileage</h2>
-    </div>
-    
-    <div data-role="content">
-        <p>Version: <span id="version"></span>
-        <p>By: Patrick Mueller
-        <p><a rel="external" href="https://github.com/pmuellr/mwa-mileage">fork me on github</a>
-    </div>
-</div> 
-
-<!- ======================================================================== -->
-<div id="template-fillup-row" class="template">
-    <div class="fillupRow">
-        <span class="fillup-row-date"></span>
-        <span class="fillup-row-miles"></span>
-        <span class="fillup-row-gallons"></span>
-        <span class="fillup-row-mileage"></span>
-    </div>
-</div>
-
-<!- ======================================================================== -->
-<div id="template-fillup-editor" class="template">
-
-        <button>save</button>
-        <button>cancel</button>
-        
-    </form>
-</div>
-
-<!- ======================================================================== -->
-</body>
 </html>

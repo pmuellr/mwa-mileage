@@ -10,27 +10,51 @@ require underscore as _
 require ../models/FillUp
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 static
+    
     var ViewOptions = {
-        model: FillUp
     }
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 class FillUpEditor(options) < backbone.View
+    console.log(arguments.callee.signature)
     super(_.extend(ViewOptions, options))
-    
+
+//-----------------------------------------------------------------------------
+getter events
+    console.log(arguments.callee.signature)
+    return {       
+        "pageshow"                         : "pageShow",
+        "click     #page-edit-button-save" : "savePressed",
+        "click"                            : "savePressed",
+    }
+
+//-----------------------------------------------------------------------------
+method pageShow()
     this.render()
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 method render()
-    $("#page-edit-field-gallons").val(this.model.gallons)
-    $("#page-edit-field-miles").val(this.model.miles)
-    $("#page-edit-field-date").val(this.model.date)
+    console.log(arguments.callee.signature)
+    var values = _.extend({gallons: "", miles: "", date: ""}, this.model)
+    
+    this.$("#page-edit-field-gallons").val(values.gallons)
+    this.$("#page-edit-field-miles").val(values.miles)
+    this.$("#page-edit-field-date").val(values.date)
     
     return this
+
+//-----------------------------------------------------------------------------
+method addFillUp()
+    console.log(arguments.callee.signature)
+    this.model = new FillUp()
+    this.render()
+
+//-----------------------------------------------------------------------------
+method editFillUp(fillUp)
+    console.log(arguments.callee.signature)
+
+//-----------------------------------------------------------------------------
+method savePressed()
+    console.log(arguments.callee.signature)
+

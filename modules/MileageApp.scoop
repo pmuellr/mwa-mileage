@@ -5,11 +5,6 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
-class MileageApp
-
 require underscore as _
 require backbone
 
@@ -21,87 +16,89 @@ require ./models/FillUpLog
 
 require ./views/FillUpEditor
 require ./views/FillUpRow
+require ./util/StackTrace
 
 //-----------------------------------------------------------------------------
-//
+class MileageApp
+
 //-----------------------------------------------------------------------------
 static 
-    var Version = "1.0.0"
+    var Version   = "1.0.0"
 
-//-----------------------------------------------------------------------------
-//
 //-----------------------------------------------------------------------------
 static method main
+    $(function() {
+        MileageApp.$ = new MileageApp()
+        MileageApp.$.runMain()
+    })
 
-    $(function() {new MileageApp().runMain()})
-    
 //-----------------------------------------------------------------------------
-//
+static method showPage(id)
+    $(".page").hide()
+    $(id).show()
+    
 //-----------------------------------------------------------------------------
 method runMain
-    this.store = BackboneLocalStorage("FillUps")
+    this.getFillUps()
+    this.setUpPages()
     
+    MileageApp.showPage("#page-main")
+
+//-----------------------------------------------------------------------------
+method getFillUps
+    this.fillUps = BackboneLocalStorage("FillUps")
+    
+//-----------------------------------------------------------------------------
+method setUpPages
+    this.setUpPageMain()
+    this.setUpPageEdit()
+    this.setUpPageSettings()
+    this.setUpPageAbout()
+
+//-----------------------------------------------------------------------------
+method setUpPageMain
+    var page = $("#page-main")
+    $(".tool-add",      page).click(cbShowPageAdd)
+    $(".tool-about",    page).click(cbShowPageAbout)
+    $(".tool-settings", page).click(cbShowPageSettings)
+
+//-----------------------------------------------------------------------------
+method setUpPageEdit
+    var page = $("#page-edit")
+    $(".tool-save",      page).click(cbShowPageMain)
+    $(".tool-cancel",    page).click(cbShowPageMain)
+
+//-----------------------------------------------------------------------------
+method setUpPageSettings
+    var page = $("#page-settings")
+    $(".tool-save",      page).click(cbShowPageMain)
+    $(".tool-cancel",    page).click(cbShowPageMain)
+
+//-----------------------------------------------------------------------------
+method setUpPageAbout
     $("#version").html(Version)
     
-    var self = this
-    
-    $("#page-entries").bind("pageshow", function(event, ui) {
-        self.showPageEntries()
-    })
-    
-    $("#page-edit").bind("pageshow", function(event, ui) {
-        self.showPageAdd()
-    })
+    var page = $("#page-about")
+    $(".tool-back",     page).click(cbShowPageMain)
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
-method showPageEntries
-    
-//-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
-method showPageAdd
+function cbShowPageMain
+    MileageApp.showPage("#page-main")
 
-    var view = new FillUpEditor({
-        model: new FillUp(),
-        el:    $("#page-edit-content").first()
-    })
-    
 //-----------------------------------------------------------------------------
-//
+function cbShowPageAdd
+    $("#edit-action").html("add")
+    MileageApp.showPage("#page-edit")
+
 //-----------------------------------------------------------------------------
-method crap
-    return this.inner()
-    
-    //-------------------------------------------------------------------------
-    fillUp = new FillUp()
-    fillUp.addCallback("change:mileage", function() {
-        console.log("mileage is now: " + fillUp.mileage)
-    })
-    
-    fillUp.miles   = 360
-    fillUp.gallons =  11
-    
-    fillUp.miles   = 2 * fillUp.miles
-    fillUp.gallons = 2 * fillUp.gallons
-    fillUp.gallons = 2 * fillUp.gallons
+function cbShowPageEdit
+    $("#edit-action").html("edit")
+    MileageApp.showPage("#page-edit")
 
-    //-------------------------------------------------------------------------
-    fillUpLog = new FillUpLog()
-    
-    vals = [
-        [300, 10], [300, 10], [200, 10], [100, 10],
-        [ 50, 10], [ 10, 10], [  1, 10],[  1, 10],
-    ]
+//-----------------------------------------------------------------------------
+function cbShowPageAbout
+    MileageApp.showPage("#page-about")
 
-    _.each(vals, function(val) {
-        var miles   = val[0]
-        var gallons = val[1]
-        
-        fillUpLog.add(new FillUp({miles:miles, gallons:gallons}))
-        console.log("fillUp: miles: " + miles + "; gallons: " + gallons + "; avg mpg: " + fillUpLog.averageMileage)
-    })
-    
-method inner
-    throw Ex(arguments, "just trying an Ex")
+//-----------------------------------------------------------------------------
+function cbShowPageSettings
+    MileageApp.showPage("#page-settings")

@@ -9,17 +9,14 @@ require backbone
 require underscore as _
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 static 
+    
     var DefaultAttributes = {
         miles:   300,
         gallons: 10,
-        date:    "2010-12-06"
+        date:    getDate()
     }
 
-//-----------------------------------------------------------------------------
-//
 //-----------------------------------------------------------------------------
 class FillUp(attributes) < backbone.Model
     attributes = _.extend({}, DefaultAttributes, attributes)
@@ -32,16 +29,12 @@ class FillUp(attributes) < backbone.Model
     this.bind("change", this.updateMileage)
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 getter miles
     return this.get("miles")
     
 setter miles(value)
     this.set("miles", value)
     
-//-----------------------------------------------------------------------------
-//
 //-----------------------------------------------------------------------------
 getter gallons
     return this.get("gallons")
@@ -50,8 +43,6 @@ setter gallons(value)
     this.set("gallons", value)
     
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 getter date
     return this.get("date")
     
@@ -59,20 +50,33 @@ setter date(value)
     this.set("date", value)
     
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 getter mileage
     return this.get("mileage")
 
-//-----------------------------------------------------------------------------
-//
 //-----------------------------------------------------------------------------
 method updateMileage()
     this.set({"mileage": calculateMileage(this.miles, this.gallons)})
 
 //-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
 function calculateMileage(miles, gallons)
     if ((0 == gallons) || (0 == miles)) return 0
     return miles * 1.0 / gallons
+    
+//-----------------------------------------------------------------------------
+function getDate
+    var date = new Date()
+    
+    return "" + 
+        date.getFullYear() + "-" + 
+        leftFill(1+date.getMonth(), 2, "0") + "-" + 
+        leftFill(date.getDate(), 2, "0")
+
+//-----------------------------------------------------------------------------
+function leftFill(string, width, fill)
+    string = "" + string
+    while (string.length < width) {
+        string = fill + string
+    }
+    return string
+
+    
