@@ -36,6 +36,7 @@ static method main
 static method showPage(id)
     $(".page").hide()
     $(id).show()
+    StackTrace.dump()
     
 //-----------------------------------------------------------------------------
 method runMain

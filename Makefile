@@ -12,7 +12,8 @@ all: help
 #-------------------------------------------------------------------------------
 # build development version
 #-------------------------------------------------------------------------------
-build-dev:
+.PHONY: build
+build: vendor
 	@echo
 	@echo ----------------------------------------------------------------------
 	@echo make build-dev starting
@@ -72,7 +73,7 @@ build-release:
 #-------------------------------------------------------------------------------
 # get vendor resources
 #-------------------------------------------------------------------------------
-get-vendor:
+vendor:
 	@rm -rf vendor
 	@mkdir  vendor
 
@@ -108,7 +109,7 @@ clean:
 #-------------------------------------------------------------------------------
 help:
 	@echo make targets available:
-	@echo "  build-dev       - build for development"
+	@echo "  build           - build for development"
 	@echo "  build-release   - build for release"
 	@echo "  clean           - garbage collect"
 	@echo "  watch           - run-when-changed make build-dev"
@@ -122,22 +123,22 @@ open:
 	open build/mwa-mileage.html
 
 #-------------------------------------------------------------------------------
-# see: https://gist.github.com/240922
-#-------------------------------------------------------------------------------
-watch:
-	make build-dev
-	python vendor/run-when-changed/run-when-changed.py "make build-dev" $(SOURCE)
-#-------------------------------------------------------------------------------
 # source files
 #-------------------------------------------------------------------------------
 SOURCE = \
    images \
    Makefile \
    modules \
-   mwa-mileage.html \
-   mwa-mileage-jquery-mobile.js \
-   mwa-mileage.css \
+   *.html \
+   *.css \
    vendor
+
+#-------------------------------------------------------------------------------
+# see: https://gist.github.com/240922
+#-------------------------------------------------------------------------------
+watch:
+	make build
+	python vendor/run-when-changed/run-when-changed.py "make build" $(SOURCE)
 
 #-------------------------------------------------------------------------------
 # vendor info
