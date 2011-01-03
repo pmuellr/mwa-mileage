@@ -5,23 +5,24 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require backbone
+require backbone as Backbone
 
 require ./FillUp
 
 //-----------------------------------------------------------------------------
-class FillUpLog < backbone.Collection
+class FillUpLog < Backbone.Collection
     super()
     
-    this.model = FillUp
+    this.model  = FillUp
     this.events = {}
-
-    this.calculateStats()
+    this.url    = "MileageApp/Fillups"
 
     var self = this
     this.bind("change", function() { self.calculateStats() })
     this.bind("add",    function() { self.calculateStats() })
     this.bind("remove", function() { self.calculateStats() })
+
+    this.fetch()
 
 //-----------------------------------------------------------------------------
 getter averageMileage

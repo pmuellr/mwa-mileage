@@ -5,8 +5,19 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require backbone as Backbone
+require ./Page
 
 //-----------------------------------------------------------------------------
-class FillUpRow < Backbone.View
+class AboutPage(app, options) < Page
+    this.events = 
+        { "click .tool-back" : "cbBack"
+        }
+    
+    super(app, options)
+    
+    $("#version").html(this.app.version)
+    
+//-----------------------------------------------------------------------------
+method cbBack
+    this.popPage()
 

@@ -5,49 +5,91 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require backbone
+require backbone as Backbone
 require underscore as _
 
 //-----------------------------------------------------------------------------
 static 
-    
-    var DefaultAttributes = {
-        miles:   300,
-        gallons: 10,
-        date:    getDate()
-    }
+    var DefaultAttributes = 
+        { distance:   300
+        , fuel:       10
+        , date:       getDate()
+        }
 
 //-----------------------------------------------------------------------------
-class FillUp(attributes) < backbone.Model
-    attributes = _.extend({}, DefaultAttributes, attributes)
+class FillUp(attributes) < Backbone.Model
+    this.defaults = DefaultAttributes
     
     super(attributes)
     
-    _.bindAll(this, "updateMileage")
-
     this.updateMileage()
-    this.bind("change", this.updateMileage)
+    
+    var self = this
+    this.bind("change", function() { self.updateMileage() })
 
 //-----------------------------------------------------------------------------
-getter miles
-    return this.get("miles")
+method validate(attrs)
+    var error
     
-setter miles(value)
-    this.set("miles", value)
+    if (attrs.distance) {
+        if (typeof attrs.distance != "number") {
+            if (!attrs.distance.match(/\d*(\.\d*)?/)) {
+                error = "distance must be a number, was '" + attrs.distance + "'"
+            }
+        }
+    }
+
+    if (attrs.fuel) {
+        if (typeof attrs.fuel != "number") {
+            if (!attrs.fuel.match(/\d*(\.\d*)?/)) {
+                error = "fuel must be a number, was '" + attrs.fuel + "'"
+            }
+        }
+    }
+
+    if (attrs.date) {
+        if (!attrs.date.match(/\d{4}-\d{2}-\d{2}/)) {
+            error = "date must be in the form YYYY-MM-DD, was '" + attrs.date + "'"
+        }
+    }
+    
+    if (error) {
+        alert(error)
+        return error
+    }
+
+//-----------------------------------------------------------------------------
+getter distance
+    return this.get("distance")
+    
+setter distance(value)
+    if (typeof value != "number") {
+        var oldValue = value
+        value = parseFloat(value)
+        if (isNaN(value)) value = oldValue // let validate catch the error
+    }
+    
+    this.set({distance: value})
     
 //-----------------------------------------------------------------------------
-getter gallons
-    return this.get("gallons")
+getter fuel
+    return this.get("fuel")
     
-setter gallons(value)
-    this.set("gallons", value)
+setter fuel(value)
+    if (typeof value != "number") {
+        var oldValue = value
+        value = parseFloat(value)
+        if (isNaN(value)) value = oldValue // let validate catch the error
+    }
+
+    this.set({fuel: value})
     
 //-----------------------------------------------------------------------------
 getter date
     return this.get("date")
     
 setter date(value)
-    this.set("date", value)
+    this.set({date: value})
     
 //-----------------------------------------------------------------------------
 getter mileage
@@ -55,12 +97,16 @@ getter mileage
 
 //-----------------------------------------------------------------------------
 method updateMileage()
-    this.set({"mileage": calculateMileage(this.miles, this.gallons)})
+    var mileage = calculateMileage(this.distance, this.fuel)
+    if (mileage != this._mileage) {
+        this._mileage = mileage
+        this.set({"mileage": mileage})
+    }
 
 //-----------------------------------------------------------------------------
-function calculateMileage(miles, gallons)
-    if ((0 == gallons) || (0 == miles)) return 0
-    return miles * 1.0 / gallons
+function calculateMileage(distance, fuel)
+    if ((0 == fuel) || (0 == distance)) return 0
+    return distance / fuel
     
 //-----------------------------------------------------------------------------
 function getDate

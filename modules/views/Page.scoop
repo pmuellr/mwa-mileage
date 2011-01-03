@@ -1,0 +1,43 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+require ../util/Ex
+require backbone as Backbone
+
+//-----------------------------------------------------------------------------
+class Page(app, options) < Backbone.View
+    this.app = app
+    
+    options = options || {}
+    
+    var id = "page-" + this.constructor.name
+    options.el = $("#" + id)[0]
+    if (!options.el) Ex(arguments, "no element found with id: '" + id + "'")
+    
+    var $el = $(options.el)
+    if (!$el.hasClass("page")) Ex(arguments, "element with id: '" + id + "' is not a page")
+    
+    super(options)
+    
+//-----------------------------------------------------------------------------
+method render
+    $(".page").hide()
+    $(this.el).show()
+    
+//-----------------------------------------------------------------------------
+static
+    var PageStack = []
+    
+//-----------------------------------------------------------------------------
+method pushPage(page)
+    PageStack.push(this)
+    page.render()
+    
+//-----------------------------------------------------------------------------
+method popPage()
+    var page = PageStack.pop()
+    page.render()

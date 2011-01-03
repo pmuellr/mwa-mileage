@@ -1,0 +1,51 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+require ./Page
+
+//-----------------------------------------------------------------------------
+class SettingsPage(app, options) < Page
+    this.events = 
+        { "click .tool-save" :   "cbSave"
+        , "click .tool-cancel" : "cbCancel"
+        }
+    
+    super(app, options)
+    
+    var self = this
+    this.app.settings.bind("change", function() { self.cbSettingsChanged()}) 
+    
+    var checkBox = this.$("[name=tilt-to-edit-numbers]")
+    checkBox.height(2*checkBox.height())
+    checkBox.width( 2*checkBox.width())
+
+//-----------------------------------------------------------------------------
+method getTiltToEditNumbersCheckBox
+    return this.$("input[name=tilt-to-edit-numbers]").is(":checked")
+
+//-----------------------------------------------------------------------------
+method setTiltToEditNumbersCheckBox(val)
+    this.$("input[name=tilt-to-edit-numbers]").attr("checked", val)
+    
+//-----------------------------------------------------------------------------
+method cbSettingsChanged
+    this.setTiltToEditNumbersCheckBox(this.app.settings.tiltToEditNumbers)
+
+//-----------------------------------------------------------------------------
+method cbSave
+    this.app.settings.tiltToEditNumbers = this.getTiltToEditNumbersCheckBox()
+    this.app.settings.save()
+    this.popPage()
+
+//-----------------------------------------------------------------------------
+method cbCancel
+    this.popPage()
+
+//-----------------------------------------------------------------------------
+method render
+    this.cbSettingsChanged()
+    super.render()

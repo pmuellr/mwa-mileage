@@ -1,0 +1,76 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+require ./Page
+
+//-----------------------------------------------------------------------------
+class EditFillUpPage(app, options) < Page
+    this.events = 
+        { "click .tool-save"     : "cbSave"
+        , "click .tool-cancel"   : "cbCancel"
+        , "click .tool-distance" : "cbEditDistance"
+        , "click .tool-fuel"     : "cbEditFuel"
+        , "click .tool-date"     : "cbEditDate"
+        }
+    
+    super(app, options)
+
+//-----------------------------------------------------------------------------
+method render
+    if (this.adding) {
+        $("#edit-action").html("add")
+    }
+    
+    else {
+        $("#edit-action").html("edit")
+    }
+
+    var self = this
+    this.model.bind("change", function() {self.cbModelUpdated()})
+    
+    this.cbModelUpdated()
+
+    super.render()
+
+//-----------------------------------------------------------------------------
+method cbModelUpdated
+    this.$("button.tool-distance").html(this.model.distance)
+    this.$("button.tool-fuel"    ).html(this.model.fuel)
+    this.$("button.tool-date"    ).html(this.model.date)
+
+//-----------------------------------------------------------------------------
+method cbEditDistance
+    var val = prompt("distance", this.model.distance)
+    this.model.distance = val
+    this.cbModelUpdated()
+
+//-----------------------------------------------------------------------------
+method cbEditFuel
+    var val = prompt("fuel", this.model.fuel)
+    this.model.fuel = val
+    this.cbModelUpdated()
+
+//-----------------------------------------------------------------------------
+method cbEditDate
+    var val = prompt("date", this.model.date)
+    this.model.date = val
+    this.cbModelUpdated()
+
+//-----------------------------------------------------------------------------
+method cbSave
+    if (this.adding) {
+        this.app.fillUps.add(this.model)
+    }
+    
+    this.app.fillUps.save()
+
+    this.popPage()
+
+//-----------------------------------------------------------------------------
+method cbCancel
+    this.popPage()
+

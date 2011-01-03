@@ -1,3 +1,4 @@
+<!doctype html>
 
 <!- ========================================================================
 Copyright (c) 2010 Patrick Mueller
@@ -22,7 +23,7 @@ http://www.opensource.org/licenses/mit-license.php
 <body>
 
 <!- ======================================================================== -->
-<div id="page-main" class="page vbox">
+<div id="page-MainPage" class="page vbox">
     <div class="titleBar">mwa-mileage</div>
     
     <div id="main-dashboard" class="hbox">
@@ -70,22 +71,22 @@ http://www.opensource.org/licenses/mit-license.php
 </div>
 
 <!- ======================================================================== -->
-<div id="page-edit" class="page">
+<div id="page-EditFillUpPage" class="page">
     <div class="titleBar">mwa-mileage <span id="edit-action">edit</span></div>
 
     <table width="100%">
     
         <tr>
-        <td width="50%">Distance 
-        <td width="50%"><input type="number" name="miles" id="dialog-edit-field-miles" min="0" max="1000" step="0.1" value="should have been set to something" />
+        <td width="40%">Distance 
+        <td width="60%"><button class="tool-distance">distance</button>
 
         <tr>
         <td>Fuel
-        <td><input type="number" name="miles" id="dialog-edit-field-miles" min="0" max="1000" step="0.1" value="should have been set to something" />
+        <td><button class="tool-fuel">fuel</button>
 
         <tr>
         <td>Date
-        <td><input type="date" name="date" id="dialog-edit-field-date" value="should have been set to something" />
+        <td><button class="tool-date">date</button>
 
     </table>
     
@@ -96,23 +97,11 @@ http://www.opensource.org/licenses/mit-license.php
 </div>
 
 <!- ======================================================================== -->
-<div id="page-settings" class="page">
+<div id="page-SettingsPage" class="page">
     <div class="titleBar">mwa-mileage settings</div>
 
-    <div>
-        <label for="distance">Miles:</label>
-        <input type="number" name="miles" id="dialog-edit-field-miles" min="0" max="1000" step="0.1" value="should have been set to something" />
-    </div>	
-
-    <div data-role="fieldcontain">
-        <label for="fuel">Gallons:</label>
-        <input type="number" name="gallons" id="dialog-edit-field-gallons" min="0" max="1000" step="0.1" value="should have been set to something" />
-    </div>	
-
-    <div data-role="fieldcontain">
-        <label for="date">Date:</label>
-        <input type="date" name="date" id="dialog-edit-field-date" value="should have been set to something" />
-    </div>	
+    <p>Tilt to edit numbers
+    <input type="checkbox" name="tilt-to-edit-numbers">
     
     <div class="toolbar hbox center">
         <button class="tool-save">   save   </button>
@@ -121,7 +110,7 @@ http://www.opensource.org/licenses/mit-license.php
 </div>
 
 <!- ======================================================================== -->
-<div id="page-about" class="page"> 
+<div id="page-AboutPage" class="page"> 
     <div class="titleBar">about mwa-mileage</div>
     
     <div class="about">
@@ -149,15 +138,21 @@ http://www.opensource.org/licenses/mit-license.php
 
 <script src="modules/MileageApp.transportd.js"></script>
 
-<script src="modules/util/BackboneLocalStorage.transportd.js"></script>
 <script src="modules/util/Ex.transportd.js"></script>
 <script src="modules/util/StackTrace.transportd.js"></script>
+<script src="modules/util/SyncLocalStorage.transportd.js"></script>
 
 <script src="modules/models/FillUp.transportd.js"></script>
-<script src="modules/models/FillUpLog.transportd.js"></script>
+<script src="modules/models/FillUps.transportd.js"></script>
+<script src="modules/models/Settings.transportd.js"></script>
 
+<script src="modules/views/AboutPage.transportd.js"></script>
+<script src="modules/views/EditFillUpPage.transportd.js"></script>
 <script src="modules/views/FillUpEditor.transportd.js"></script>
 <script src="modules/views/FillUpRow.transportd.js"></script>
+<script src="modules/views/MainPage.transportd.js"></script>
+<script src="modules/views/Page.transportd.js"></script>
+<script src="modules/views/SettingsPage.transportd.js"></script>
 
 <script>
 require("MileageApp").main()

@@ -78,6 +78,12 @@ body {
     font-weight:            bold;
 }
 
+.tool-distance,
+.tool-fuel,
+.tool-date {
+    font-size:              90%;
+}
+
 /* ---------------------------------------------------------------------------*/
 #total-fuel {
     font-weight:            bold;
@@ -102,11 +108,12 @@ body {
 /* ---------------------------------------------------------------------------*/
 .titleBar {
     margin:                 0;
+    padding:                0.2em 0.0em;
     text-align:             center;
     font-size:              100%;
     font-weight:            bold;
     color:                  #FFF;
-    background-color:       #000;
+    background-color:       #007;
 }
 
 /* ---------------------------------------------------------------------------*/

@@ -1,0 +1,33 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+require backbone as Backbone
+
+//-----------------------------------------------------------------------------
+static 
+    var DefaultAttributes = 
+        { tiltToEditNumbers: false
+        }
+
+//-----------------------------------------------------------------------------
+class Settings(attributes) < Backbone.Model
+    this.defaults = DefaultAttributes
+    this.url      = "MileageApp/Settings"
+    
+    super(attributes)
+    
+    this.fetch()
+
+//-----------------------------------------------------------------------------
+getter tiltToEditNumbers
+    return this.get("tiltToEditNumbers")
+
+setter tiltToEditNumbers(value)
+    this.set({tiltToEditNumbers: value})
+    this.save()
+    
+

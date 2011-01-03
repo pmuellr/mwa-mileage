@@ -5,7 +5,7 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require backbone
+require backbone as Backbone
 require underscore as _
 require ../models/FillUp
 
@@ -16,7 +16,7 @@ static
     }
 
 //-----------------------------------------------------------------------------
-class FillUpEditor(options) < backbone.View
+class FillUpEditor(options) < Backbone.View
     console.log(arguments.callee.signature)
     super(_.extend(ViewOptions, options))
 

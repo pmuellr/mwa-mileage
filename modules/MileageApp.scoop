@@ -5,101 +5,48 @@
 // http://www.opensource.org/licenses/mit-license.php
 //-----------------------------------------------------------------------------
 
-require underscore as _
-require backbone
+static 
+    require("modjewel").warnOnRecursiveRequire(true)
 
-require ./util/BackboneLocalStorage
-require ./util/Ex
+// override Backbone.sync with localStorage version
+require ./util/SyncLocalStorage
 
-require ./models/FillUp
-require ./models/FillUpLog
+require ./models/FillUps
+require ./models/Settings
 
-require ./views/FillUpEditor
-require ./views/FillUpRow
-require ./util/StackTrace
-
-//-----------------------------------------------------------------------------
-class MileageApp
+require ./views/AboutPage
+require ./views/EditFillUpPage
+require ./views/MainPage
+require ./views/SettingsPage
 
 //-----------------------------------------------------------------------------
 static 
     var Version   = "1.0.0"
 
 //-----------------------------------------------------------------------------
+class MileageApp
+    this.version = Version
+    
+//-----------------------------------------------------------------------------
 static method main
     $(function() {
-        MileageApp.$ = new MileageApp()
+        MileageApp.$ = new MileageApp
         MileageApp.$.runMain()
     })
 
 //-----------------------------------------------------------------------------
-static method showPage(id)
-    $(".page").hide()
-    $(id).show()
-    StackTrace.dump()
-    
-//-----------------------------------------------------------------------------
 method runMain
-    this.getFillUps()
+    this.settings = new Settings()
+    this.fillUps  = new FillUps()
+    
     this.setUpPages()
     
-    MileageApp.showPage("#page-main")
+    this.pageMain.render()
 
-//-----------------------------------------------------------------------------
-method getFillUps
-    this.fillUps = BackboneLocalStorage("FillUps")
-    
 //-----------------------------------------------------------------------------
 method setUpPages
-    this.setUpPageMain()
-    this.setUpPageEdit()
-    this.setUpPageSettings()
-    this.setUpPageAbout()
+    this.pageMain       = new MainPage(this)
+    this.pageAbout      = new AboutPage(this)
+    this.pageEditFillUp = new EditFillUpPage(this)
+    this.pageSettings   = new SettingsPage(this)
 
-//-----------------------------------------------------------------------------
-method setUpPageMain
-    var page = $("#page-main")
-    $(".tool-add",      page).click(cbShowPageAdd)
-    $(".tool-about",    page).click(cbShowPageAbout)
-    $(".tool-settings", page).click(cbShowPageSettings)
-
-//-----------------------------------------------------------------------------
-method setUpPageEdit
-    var page = $("#page-edit")
-    $(".tool-save",      page).click(cbShowPageMain)
-    $(".tool-cancel",    page).click(cbShowPageMain)
-
-//-----------------------------------------------------------------------------
-method setUpPageSettings
-    var page = $("#page-settings")
-    $(".tool-save",      page).click(cbShowPageMain)
-    $(".tool-cancel",    page).click(cbShowPageMain)
-
-//-----------------------------------------------------------------------------
-method setUpPageAbout
-    $("#version").html(Version)
-    
-    var page = $("#page-about")
-    $(".tool-back",     page).click(cbShowPageMain)
-
-//-----------------------------------------------------------------------------
-function cbShowPageMain
-    MileageApp.showPage("#page-main")
-
-//-----------------------------------------------------------------------------
-function cbShowPageAdd
-    $("#edit-action").html("add")
-    MileageApp.showPage("#page-edit")
-
-//-----------------------------------------------------------------------------
-function cbShowPageEdit
-    $("#edit-action").html("edit")
-    MileageApp.showPage("#page-edit")
-
-//-----------------------------------------------------------------------------
-function cbShowPageAbout
-    MileageApp.showPage("#page-about")
-
-//-----------------------------------------------------------------------------
-function cbShowPageSettings
-    MileageApp.showPage("#page-settings")

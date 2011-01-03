@@ -1,0 +1,246 @@
+
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 Patrick Mueller
+// Licensed under the MIT license: 
+// http://www.opensource.org/licenses/mit-license.php
+//-----------------------------------------------------------------------------
+
+require backbone   as Backbone
+require underscore as _
+
+require ./StackTrace
+
+//-----------------------------------------------------------------------------
+static
+    var VerboseErrors = true
+    
+//-----------------------------------------------------------------------------
+function sync(method, model, success, error)
+
+    var func
+    var response
+    
+    var isCollection = model instanceof Backbone.Collection
+    var collection   = model.collection
+    
+    // is a collection?  supports read only
+    if (isCollection) {
+        if (method == "read") func = SyncLocalStorage.readCollection
+        else response = Ex(arguments, "invalid sync method on collection: '" + method + "'")
+    }
+
+    else {
+        // not in a collection?
+        if (!collection) {
+            if      (method == "create")  func = SyncLocalStorage.createModel
+            else if (method == "read")    func = SyncLocalStorage.readModel
+            else if (method == "update")  func = SyncLocalStorage.updateModel
+            else if (method == "delete")  func = SyncLocalStorage.destroyModel
+            else response = Ex(arguments, "invalid sync method on stand-alone model: '" + method + "'")
+        }
+        
+        // in a collection?
+        else {
+            if      (method == "create")  func = SyncLocalStorage.createModelInCollection
+            else if (method == "read")    func = SyncLocalStorage.readModelInCollection
+            else if (method == "update")  func = SyncLocalStorage.updateModelInCollection
+            else if (method == "delete")  func = SyncLocalStorage.destroyModelInCollection
+            else response = Ex(arguments, "invalid sync method on model in a collection: '" + method + "'")
+        }
+    }
+    
+    // call the actual function
+    if (func) {
+        response = func(model, collection)
+    }
+    
+    // process the response
+    
+    // exception? call the error callback
+    if (response instanceof Error) {
+      // jQuery error signature: error(XMLHttpRequest, textStatus, errorThrown)
+        if (error) error(null, response.message, response)
+    }
+
+    // no data returned?
+    else if (!response) {
+      // jQuery error signature: error(XMLHttpRequest, textStatus, errorThrown)
+        if (error) error(null, "no data returned", null)
+    }
+    
+    // otherwise assume it's a success
+    else {
+        // jQuery success signature: success(data, textStatus, XMLHttpRequest)    
+        if (success) success(response, "", null)
+    }
+    
+    return undefined
+
+//-----------------------------------------------------------------------------
+static
+    Backbone.sync = sync
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+class SyncLocalStorage
+
+//-----------------------------------------------------------------------------
+static method readCollection(collection)
+    var data = LS_load(getUrl(collection))
+    
+    if (null == data) data = []
+    
+    if (!_.isArray(data)) return Ex("data retrieved was not an array: " + data)
+    
+    return data
+
+//-----------------------------------------------------------------------------
+static method createModel(model)
+    return SyncLocalStorage.updateModel(model)
+
+//-----------------------------------------------------------------------------
+static method readModel(model)
+    var modelJSON = LS_load(getUrl(model))
+    return modelJSON
+
+//-----------------------------------------------------------------------------
+static method updateModel(model)
+    var modelJSON = model.toJSON()
+
+    var result = LS_save(getUrl(model), modelJSON)
+    if (result) return result // error
+    
+    return modelJSON
+
+//-----------------------------------------------------------------------------
+static method destroyModel(model)
+    var modelJSON = model.toJSON()
+
+    var result = LS_destroy(getUrl(model))
+    if (result) return result // error
+
+    return modelJSON
+    
+//-----------------------------------------------------------------------------
+static method createModelInCollection(model, collection)
+
+    // if id already set, validate not being used
+    if (model.id) {
+        var data = LS_load(getUrl(collection))
+        if (data instanceof Error) return data
+        
+        var found = _.any(data, function(datum) {
+            return datum.id == model.id
+        })
+        
+        if (found) return Ex(arguments, "model with id already in collection: '" + model.id + "'")
+    }
+    
+    // assign a new id
+    if (!model.id) {
+        var id = _.reduce(data, nextId, 1)
+        model.id = model.attributes.id = id
+    }
+    
+    // save the collection
+    var collectionJSON = collection.toJSON()
+
+    var result = LS_save(getUrl(collection), collectionJSON)
+    if (result) return result // error
+
+    return model.toJSON()
+    
+//-----------------------------------------------------------------------------
+// function to use with reduce on an array to get the next unused id
+//-----------------------------------------------------------------------------
+function nextId(memo, model)
+    if (typeof(model.id) != "number") return memo
+    if (memo <= model.id) memo = model.id + 1
+    return memo
+
+//-----------------------------------------------------------------------------
+static method readModelInCollection(model, collection)
+    if (!model.id) return null
+    
+    var data = LS_load(getUrl(collection))
+    if (data instanceof Error) return data
+    
+    var result = _.detect(data, function(model) {
+        return datum.id == model.id
+    })
+
+    if (!result) return Ex(arguments, "model not found for id: '" + model.id + "'")
+    return result
+
+//-----------------------------------------------------------------------------
+static method updateModelInCollection(model, collection)
+    var collectionJSON = collection.toJSON()
+
+    var result = LS_save(getUrl(collection), collectionJSON)
+    if (result) return result // error
+
+    return model.toJSON()
+
+//-----------------------------------------------------------------------------
+static method destroyModelInCollection(model, collection)
+    return SyncLocalStorage.updateModelInCollection(model,collection)
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+function getUrl(object)
+    if (!(object && object.url)) return Ex(arguments, "A 'url' property or function must be specified")
+    
+    return _.isFunction(object.url) ? object.url() : object.url
+
+//-----------------------------------------------------------------------------
+function Ex(arguments, message)
+    if (VerboseErrors) {
+        console.log("exception during sync: " + message)
+        StackTrace.dump(arguments)
+    }
+    
+    return new Error(message)
+
+//-----------------------------------------------------------------------------
+function LS_load(key)
+    if (null == key) return Ex(arguments, "key is null")
+    if (key instanceof Error) return key
+    
+    var data = localStorage.getItem(key)
+    if (!data) return null
+    
+    try {
+        return JSON.parse(data)
+    }
+    catch(e) {
+        return Ex(arguments, e)
+    }
+
+//-----------------------------------------------------------------------------
+function LS_save(key, object)
+    if (null == key) return Ex(arguments, "key is null")
+    if (key instanceof Error) return key
+    
+    var data 
+    
+    try {
+        data = JSON.stringify(object)
+    }
+    catch(e) {
+        return Ex(arguments, e)
+    }
+    
+    localStorage.setItem(key, data)
+
+//-----------------------------------------------------------------------------
+function LS_destroy(key)
+    if (null == key) return Ex(arguments, "key is null")
+    if (key instanceof Error) return key
+
+    localStorage.removeItem(key)    
+
+
